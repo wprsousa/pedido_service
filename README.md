@@ -15,6 +15,7 @@ O Pedido Service é um microserviço que implementa uma API RESTful para gerenci
 - ✅ **Máquina de estados** para transições de pedidos
 - ✅ **Testes unitários** com pytest e mocks
 - ✅ **Enums tipados** para status
+- ✅ **Controle de estoque** com reserva automática
 
 ---
 
@@ -110,7 +111,7 @@ A API estará disponível em: **http://127.0.0.1:8001**
 ### Pedidos
 
 #### `POST /pedidos/` - Criar Pedido
-Cria um novo pedido com status `CRIADO`.
+Cria um novo pedido com status `CRIADO`. Valida a disponibilidade de estoque para cada produto e reserva automaticamente a quantidade solicitada.
 
 **Request:**
 ```json
@@ -155,6 +156,10 @@ Cria um novo pedido com status `CRIADO`.
   ]
 }
 ```
+
+**Erros:**
+- `404 Not Found`: Produto não encontrado
+- `400 Bad Request`: Estoque insuficiente
 
 ---
 
@@ -393,5 +398,4 @@ Para dúvidas ou sugestões, abra uma issue no repositório.
 
 ---
 
-**Última atualização**: Abril de 2026
-
+**Última atualização**: 15 de Abril de 2026
