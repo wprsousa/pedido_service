@@ -20,8 +20,6 @@ def criar_pedido(
         return PedidoResponse.from_model(pedido)
     except exceptions.ProdutoNaoEncontradoException as e:
         raise HTTPException(status_code=404, detail=str(e))
-    except exceptions.EstoqueInsuficienteException as e:
-        raise HTTPException(status_code=400, detail=str(e))
 
 
 @router.get("/{pedido_id}", response_model=PedidoResponse)
@@ -38,7 +36,9 @@ def buscar_pedido_por_id(
 
 
 @router.patch("/{pedido_id}/pagar", response_model=PedidoResponse)
-def pagar_pedido(pedido_id: str, service: PedidoService = Depends(get_pedido_service)) -> PedidoResponse:
+def pagar_pedido(
+    pedido_id: str, service: PedidoService = Depends(get_pedido_service)
+) -> PedidoResponse:
     try:
         pedido = service.pagar_pedido(pedido_id)
         return PedidoResponse.from_model(pedido)
@@ -51,7 +51,9 @@ def pagar_pedido(pedido_id: str, service: PedidoService = Depends(get_pedido_ser
 
 
 @router.patch("/{pedido_id}/enviar", response_model=PedidoResponse)
-def enviar_pedido(pedido_id: str, service: PedidoService = Depends(get_pedido_service)) -> PedidoResponse:
+def enviar_pedido(
+    pedido_id: str, service: PedidoService = Depends(get_pedido_service)
+) -> PedidoResponse:
     try:
         pedido = service.enviar_pedido(pedido_id)
         return PedidoResponse.from_model(pedido)
@@ -62,7 +64,9 @@ def enviar_pedido(pedido_id: str, service: PedidoService = Depends(get_pedido_se
 
 
 @router.patch("/{pedido_id}/entregar", response_model=PedidoResponse)
-def entregar_pedido(pedido_id: str, service: PedidoService = Depends(get_pedido_service)) -> PedidoResponse:
+def entregar_pedido(
+    pedido_id: str, service: PedidoService = Depends(get_pedido_service)
+) -> PedidoResponse:
     try:
         pedido = service.entregar_pedido(pedido_id)
         return PedidoResponse.from_model(pedido)
@@ -75,7 +79,9 @@ def entregar_pedido(pedido_id: str, service: PedidoService = Depends(get_pedido_
 
 
 @router.patch("/{pedido_id}/cancelar", response_model=PedidoResponse)
-def cancelar_pedido(pedido_id: str, service: PedidoService = Depends(get_pedido_service)) -> PedidoResponse:
+def cancelar_pedido(
+    pedido_id: str, service: PedidoService = Depends(get_pedido_service)
+) -> PedidoResponse:
     try:
         pedido = service.cancelar_pedido(pedido_id)
         return PedidoResponse.from_model(pedido)

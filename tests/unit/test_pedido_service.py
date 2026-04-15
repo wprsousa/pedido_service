@@ -2,7 +2,11 @@ from unittest.mock import Mock
 
 import pytest
 
-from src.model.exceptions import PedidoNaoEncontradoException
+from src.model.exceptions import (
+    EstoqueInsuficienteException,
+    PedidoNaoEncontradoException,
+    ProdutoNaoEncontradoException,
+)
 from src.model.pedido import Pedido
 from src.model.produto import Produto
 from src.model.status_pedido import StatusPedido
@@ -24,8 +28,16 @@ def pedido_service():
 def test_criar_pedido_com_sucesso(pedido_service):
     service, pedido_repo, produto_repo, notificacao_repo = pedido_service
 
-    produto1 = Produto(id="1", nome="Playstation 5", preco=3999.0, ativo=True)
-    produto2 = Produto(id="2", nome="Red Dead Redemption", preco=195.0, ativo=True)
+    produto1 = Produto(
+        id="1", nome="Playstation 5", preco=3999.0, ativo=True, quantidade_estoque=3
+    )
+    produto2 = Produto(
+        id="2",
+        nome="Red Dead Redemption",
+        preco=195.0,
+        ativo=True,
+        quantidade_estoque=5,
+    )
 
     def mock_buscar_produto_por_id(produto_id):
         if produto_id == "1":
@@ -55,6 +67,62 @@ def test_criar_pedido_com_sucesso(pedido_service):
     assert pedido.valor_total == 4389.0
 
     pedido_repo.salvar_pedido.assert_called_once_with(pedido)
+    assert produto_repo.salvar_produto.call_count == 2
+    produto_repo.salvar_produto.assert_any_call(produto1)
+    produto_repo.salvar_produto.assert_any_call(produto2)
+
+    assert produto1.quantidade_estoque == 2
+    assert produto2.quantidade_estoque == 3
+
+
+def test_criar_pedido_com_produto_inexistente(pedido_service):
+    service, pedido_repo, produto_repo, notificacao_repo = pedido_service
+
+    produto1 = Produto(
+        id="1", nome="Playstation 5", preco=3999.0, ativo=True, quantidade_estoque=3
+    )
+
+    def mock_buscar_produto_por_id(produto_id):
+        if produto_id == "1":
+            return produto1
+        return None
+
+    produto_repo.buscar_produto_por_id.side_effect = mock_buscar_produto_por_id
+
+    itens = [{"produto_id": "1", "quantidade": 1}, {"produto_id": "2", "quantidade": 2}]
+
+    with pytest.raises(ProdutoNaoEncontradoException) as exc_info:
+        service.criar_pedido("Cliente Teste", itens)
+
+    assert exc_info.value.produto_id == "2"
+
+
+def test_criar_pedido_com_estoque_insuficiente(pedido_service):
+    service, pedido_repo, produto_repo, notificacao_repo = pedido_service
+
+    produto1 = Produto(
+        id="1",
+        nome="Playstation 5",
+        preco=3999.0,
+        ativo=True,
+        quantidade_estoque=1,  # Apenas 1 em estoque
+    )
+
+    def mock_buscar_produto_por_id(produto_id):
+        if produto_id == "1":
+            return produto1
+        return None
+
+    produto_repo.buscar_produto_por_id.side_effect = mock_buscar_produto_por_id
+
+    itens = [{"produto_id": "1", "quantidade": 2}]
+
+    with pytest.raises(EstoqueInsuficienteException) as exc_info:
+        service.criar_pedido("Cliente Teste", itens)
+
+    assert exc_info.value.produto_id == "1"
+    assert exc_info.value.quantidade_solicitada == 2
+    assert exc_info.value.quantidade_disponivel == 1
 
 
 def test_pagar_pedido_com_sucesso(pedido_service):
