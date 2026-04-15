@@ -7,3 +7,4 @@ class Produto:
     nome: str
     preco: float
     ativo: bool
+    quantidade_estoque: int = 0

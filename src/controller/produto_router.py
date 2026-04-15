@@ -12,7 +12,9 @@ router = APIRouter()
 def criar_produto(
     request: ProdutoRequest, service: ProdutoService = Depends(get_produto_service)
 ):
-    produto = service.criar_produto(nome=request.nome, preco=request.preco)
+    produto = service.criar_produto(
+        nome=request.nome, preco=request.preco, quantidade=request.quantidade
+    )
     return ProdutoResponse.from_model(produto)
 
 

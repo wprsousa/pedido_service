@@ -1,10 +1,13 @@
-from datetime import datetime
+import logging
 from dataclasses import dataclass, field
+from datetime import datetime
+from uuid import uuid4
 
 from src.model import exceptions
 from src.model.item_pedido import ItemPedido
 from src.model.status_pedido import StatusPedido
-from uuid import uuid4
+
+logger = logging.getLogger(__name__)
 
 
 @dataclass

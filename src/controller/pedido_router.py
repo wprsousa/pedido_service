@@ -20,6 +20,8 @@ def criar_pedido(
         return PedidoResponse.from_model(pedido)
     except exceptions.ProdutoNaoEncontradoException as e:
         raise HTTPException(status_code=404, detail=str(e))
+    except exceptions.EstoqueInsuficienteException as e:
+        raise HTTPException(status_code=400, detail=str(e))
 
 
 @router.get("/{pedido_id}", response_model=PedidoResponse)
