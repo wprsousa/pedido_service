@@ -1,5 +1,3 @@
-from unittest.mock import Mock
-
 import pytest
 
 from src.model.exceptions import (
@@ -10,19 +8,6 @@ from src.model.exceptions import (
 from src.model.pedido import Pedido
 from src.model.produto import Produto
 from src.model.status_pedido import StatusPedido
-from src.service.interfaces.notificacao_service import NotificacaoServiceInterface
-from src.service.interfaces.pedido_repository import PedidoRepositoryInterface
-from src.service.interfaces.produto_repository import ProdutoRepositoryInterface
-from src.service.pedido_service import PedidoService
-
-
-@pytest.fixture
-def pedido_service():
-    pedido_repo = Mock(spec=PedidoRepositoryInterface)
-    produto_repo = Mock(spec=ProdutoRepositoryInterface)
-    notificacao_repo = Mock(spec=NotificacaoServiceInterface)
-    service = PedidoService(pedido_repo, produto_repo, notificacao_repo)
-    return service, pedido_repo, produto_repo, notificacao_repo
 
 
 def test_criar_pedido_com_sucesso(pedido_service):

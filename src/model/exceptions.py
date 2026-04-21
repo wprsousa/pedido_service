@@ -14,15 +14,21 @@ class ProdutoNaoEncontradoException(Exception):
 
 
 class EstoqueInsuficienteException(Exception):
-    def __init__(self, produto_id: str, quantidade_solicitada: int, quantidade_disponivel: int):
+    def __init__(
+        self, produto_id: str, quantidade_solicitada: int, quantidade_disponivel: int
+    ):
         self.produto_id = produto_id
         self.quantidade_solicitada = quantidade_solicitada
         self.quantidade_disponivel = quantidade_disponivel
-        super().__init__(f"Estoque insuficiente para o produto '{produto_id}': solicitado {quantidade_solicitada}, disponível {quantidade_disponivel}.")
+        super().__init__(
+            f"Estoque insuficiente para o produto '{produto_id}': solicitado {quantidade_solicitada}, disponível {quantidade_disponivel}."
+        )
 
 
 class TransicaoInvalidaException(Exception):
     def __init__(self, status_atual: StatusPedido, status_destino: StatusPedido):
         self.status_atual = status_atual
         self.status_destino = status_destino
-        super().__init__(f"Não é possível transitar do status '{status_atual}' para '{status_destino}'.")
+        super().__init__(
+            f"Não é possível transitar do status '{status_atual.value}' para '{status_destino.value}'."
+        )

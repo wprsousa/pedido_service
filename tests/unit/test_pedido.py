@@ -1,16 +1,24 @@
 import pytest
-from datetime import datetime
 
+from src.model.exceptions import (
+    TransicaoInvalidaException,
+)
 from src.model.item_pedido import ItemPedido
 from src.model.pedido import Pedido
 from src.model.status_pedido import StatusPedido
-from src.model.exceptions import PedidoNaoEncontradoException, TransicaoInvalidaException
 
 
 def criar_pedido() -> Pedido:
     itens = [
-        ItemPedido(produto_id="1", nome_produto="Macbook", quantidade=1, preco_unitario=7999.0),
-        ItemPedido(produto_id="2", nome_produto="MagicMouse", quantidade=2, preco_unitario=599.0),
+        ItemPedido(
+            produto_id="1", nome_produto="Macbook", quantidade=1, preco_unitario=7999.0
+        ),
+        ItemPedido(
+            produto_id="2",
+            nome_produto="MagicMouse",
+            quantidade=2,
+            preco_unitario=599.0,
+        ),
     ]
     return Pedido(cliente="Wellington Pedro", itens=itens)
 
